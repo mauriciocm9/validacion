@@ -52,6 +52,40 @@
             </div>
         </div>
     </div>
+
+    <div class="container bootstrap snippets bootdey">
+        <h3>Agregar equipo</h3>
+        <form id="add-team">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Nombre equipo</label>
+                <input type="text" class="form-control" name="equi_nomb" placeholder="Nombre">
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar equipo</button>
+        </form>
+        <hr>
+        </br>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="main-box no-header clearfix">
+                    <div class="main-box-body clearfix">
+                        <div class="table-responsive">
+                            <table class="table user-list">
+                                <thead>
+                                    <tr>
+                                        <th><span>Nombre equipo</span></th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body-team">
+                                    <!-- Here goes the players -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script>
     $.ajax({
@@ -73,6 +107,59 @@
             data: form.serialize() + "&action=create_player",
             success: function(data) {
                 $("#body-table").append(data);
+            }
+        });
+    });
+
+    $("#body-table").on("click", "tr td a.delete-player", function(event) {
+        var elem = $(this);
+        var id = elem.data("id");
+
+        $.ajax({
+            type: "POST",
+            url: "./controller.php",
+            data: "juga_iden=" + id + "&action=delete_player",
+            success: function(data) {
+                elem.parents("tr").remove();
+            }
+        });
+    });
+
+
+    // Handle teams
+    $.ajax({
+        type: "POST",
+        url: "./controller.php",
+        data: "action=get_teams",
+        success: function(data) {
+            $("#body-team").append(data);
+        }
+    });
+
+    $("#add-team").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+
+        $.ajax({
+            type: "POST",
+            url: "./controller.php",
+            data: form.serialize() + "&action=create_team",
+            success: function(data) {
+                $("#body-team").append(data);
+            }
+        });
+    });
+
+    $("#body-team").on("click", "tr td a.delete-team", function(event) {
+        var elem = $(this);
+        var id = elem.data("id");
+
+        $.ajax({
+            type: "POST",
+            url: "./controller.php",
+            data: "equi_codi=" + id + "&action=delete_team",
+            success: function(data) {
+                elem.parents("tr").remove();
             }
         });
     });

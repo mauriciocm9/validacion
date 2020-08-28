@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit(0);
 }
 
-$template1 = <<<EOD
+$templatePlayer = <<<EOD
 <tr>
     <td>
         <span class="user-subhead">%s</span>
@@ -14,19 +14,7 @@ $template1 = <<<EOD
         <span class="user-subhead">%s</span>
     </td>
     <td style="width: 20%%;">
-        <a href="#" class="table-link">
-            <span class="fa-stack">
-                <i class="fa fa-square fa-stack-2x"></i>
-                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
-            </span>
-        </a>
-        <a href="#" class="table-link">
-            <span class="fa-stack">
-                <i class="fa fa-square fa-stack-2x"></i>
-                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-            </span>
-        </a>
-        <a href="#" class="table-link danger">
+        <a href="#" class="delete-player table-link danger" data-id=%d>
             <span class="fa-stack">
                 <i class="fa fa-square fa-stack-2x"></i>
                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
@@ -42,18 +30,18 @@ if($_POST["action"] === "create_player") {
     $name = $_POST["juga_nomb"];
     $lastname = $_POST["juga_apel"];
 
-    $rowsCount = createNewPlayer($name, $lastname);
-    if($rowsCount != 1) {
+    $id = createNewPlayer($name, $lastname);
+    if($id <= 0) {
         exit(0);
     }
 
-    printf($template1, $name, $lastname);
+    printf($templatePlayer, $name, $lastname, $id);
 }
 
 if($_POST["action"] === "get_players") {
     $players = getPlayers();
     foreach($players as $player){
-        printf($template1, $player["juga_nomb"], $player["juga_apel"]);
+        printf($templatePlayer, $player["juga_nomb"], $player["juga_apel"], $player["juga_iden"]);
     }
 }
 
@@ -63,4 +51,46 @@ if($_POST["action"] === "delete_player") {
         exit(0);
     }
 }
+
+$templateTeam = <<<EOD
+<tr>
+    <td>
+        <span class="user-subhead">%s</span>
+    </td>
+    <td style="width: 20%%;">
+        <a href="#" class="delete-team table-link danger" data-id=%d>
+            <span class="fa-stack">
+                <i class="fa fa-square fa-stack-2x"></i>
+                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+            </span>
+        </a>
+    </td>
+</tr>
+EOD;
+
+if($_POST["action"] === "create_team") {
+    $name = $_POST["equi_nomb"];
+
+    $id = createNewTeam($name);
+    if($id <= 0) {
+        exit(0);
+    }
+
+    printf($templateTeam, $name, $id);
+}
+
+if($_POST["action"] === "get_teams") {
+    $teams = getTeams();
+    foreach($teams as $team){
+        printf($templateTeam, $team["equi_nomb"], $team["equi_codi"]);
+    }
+}
+
+if($_POST["action"] === "delete_team") {
+    $rowsCount = deleteTeam($_POST["equi_codi"]);
+    if($rowsCount != 1) {
+        exit(0);
+    }
+}
+
 ?>

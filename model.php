@@ -146,7 +146,7 @@ function createNewPlayer($name, $lastname) {
 	$db = getconn();
 
 	$q = sprintf('INSERT INTO JUGADOR VALUES (NULL, "%s", "%s")', $name, $lastname);
-	$ar = $db->query($q)->affectedRows();
+	$ar = $db->query($q)->lastInsertID();
 
 	$db->close();
 
@@ -167,6 +167,38 @@ function deletePlayer($id) {
 	$db = getconn();
 
 	$q = sprintf('DELETE FROM JUGADOR WHERE juga_iden=%d', $id);
+	$ar = $db->query($q)->affectedRows();
+
+	$db->close();
+
+	return $ar;
+}
+
+function createNewTeam($name) {
+	$db = getconn();
+
+	$q = sprintf('INSERT INTO EQUIPO VALUES (NULL, "%s")', $name);
+	$ar = $db->query($q)->lastInsertID();
+
+	$db->close();
+
+	return $ar;
+}
+
+function getTeams() {
+	$db = getConn();
+
+	$r = $db->query('SELECT * FROM EQUIPO')->fetchAll();
+
+	$db->close();
+
+	return $r;
+}
+
+function deleteTeam($id) {
+	$db = getconn();
+
+	$q = sprintf('DELETE FROM EQUIPO WHERE equi_codi=%d', $id);
 	$ar = $db->query($q)->affectedRows();
 
 	$db->close();
