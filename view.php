@@ -37,47 +37,57 @@
                             <table class="table user-list">
                                 <thead>
                                     <tr>
-                                        <th><span>User</span></th>
-                                        <th><span>Created</span></th>
-                                        <th class="text-center"><span>Status</span></th>
-                                        <th><span>Email</span></th>
+                                        <th><span>Nombre</span></th>
+                                        <th><span>Apellido</span></th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="user-link">Full name 1</a>
-                                            <span class="user-subhead">Member</span>
-                                        </td>
-                                        <td>2013/08/12</td>
-                                        <td class="text-center">
-                                            <span class="label label-default">pending</span>
-                                        </td>
-                                        <td>
-                                            <a href="#">marlon@brando.com</a>
-                                        </td>
-                                        <td style="width: 20%;">
-                                            <a href="#" class="table-link">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                            <a href="#" class="table-link">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                            <a href="#" class="table-link danger">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tbody id="body-table">
+                                    <?php
+                                    include './model.php';
+
+                                    $dbhost = 'localhost';
+                                    $dbuser = 'root';
+                                    $dbpass = '';
+                                    $dbname = 'validacion';
+
+                                    $db = new db($dbhost, $dbuser, $dbpass, $dbname);
+                                    $jugadores = $db->query('SELECT * FROM JUGADOR')->fetchAll();
+
+                                    foreach ($jugadores as $account) {
+                                    ?>
+                                        <tr>
+                                            <td>
+                                                <span class="user-subhead"><?php echo $account['juga_nomb'] ?></span>
+                                            </td>
+                                            <td>
+                                                <span class="user-subhead"><?php echo $account['juga_apel'] ?></span>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <a href="#" class="table-link">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                                <a href="#" class="table-link">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                                <a href="#" class="table-link danger">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    $db->close();
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -88,6 +98,35 @@
     </div>
 </body>
 <script>
+    var aa = `<tr>
+    <td>
+    <span class="user-subhead">{{nombre}}</span>
+    </td>
+        <td>
+            <span class="user-subhead">{{apellido}}</span>
+        </td>
+        <td style="width: 20%;">
+            <a href="#" class="table-link">
+                <span class="fa-stack">
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+            <a href="#" class="table-link">
+                <span class="fa-stack">
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+            <a href="#" class="table-link danger">
+                <span class="fa-stack">
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </td>
+    </tr>`;
+
     $("#add-player").submit(function(e) {
         e.preventDefault();
         var form = $(this);
@@ -97,7 +136,7 @@
             url: "./controller.php",
             data: form.serialize(),
             success: function(data) {
-                alert(data);
+                $("#body-table").append(aa.replace("{{nombre}}", form.find('input[name="juga_nomb"]').val()).replace("{{apellido}}", form.find('input[name="juga_apel"]').val()));
             }
         });
     });
