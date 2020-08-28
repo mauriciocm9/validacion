@@ -128,4 +128,50 @@ class db {
 	}
 
 }
+
+
+
+// Declare global so we reuse the connection and make it faster.
+// TODO: Make this a singleton(don't know how to do it since PHP runs with a fork())
+function getConn() {
+	$dbhost = 'localhost';
+	$dbuser = 'root';
+	$dbpass = '';
+	$dbname = 'validacion';
+
+	return new db($dbhost, $dbuser, $dbpass, $dbname);
+}
+
+function createNewPlayer($name, $lastname) {
+	$db = getconn();
+
+	$q = sprintf('INSERT INTO JUGADOR VALUES (NULL, "%s", "%s")', $name, $lastname);
+	$ar = $db->query($q)->affectedRows();
+
+	$db->close();
+
+	return $ar;
+}
+
+function getPlayers() {
+	$db = getConn();
+
+	$r = $db->query('SELECT * FROM JUGADOR')->fetchAll();
+
+	$db->close();
+
+	return $r;
+}
+
+function deletePlayer($id) {
+	$db = getconn();
+
+	$q = sprintf('DELETE FROM JUGADOR WHERE juga_iden=%d', $id);
+	$ar = $db->query($q)->affectedRows();
+
+	$db->close();
+
+	return $ar;
+}
+
 ?>
